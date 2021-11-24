@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>JS</h1>
+    
+    <h3>1. days between dates</h3>   
+    <br>
+    <input type="text" size="40" id="q1" value="Jan 01 2016">
+    <input type="text" size="40" id="q2" value="Jan 02 2017" style="display: block; margin-top:10px">    
+    <br>
+    <button onclick="daysTotal()">Submit</button>
+    <br>
+    <div id="days" style="color:green; margin: 10px;"></div>
+
+
+    <h3>2. ordered array of sales</h3>
+    <br>
+    
+    <textarea rows="7" cols="30" id="arr" >[{amount: 5000,quantity: 50},{amount: 2000,quantity: 20},{amount: 3000,quantity: 30},{amount: 1000,quantity: 10}]</textarea>
+    
+    <p><input type="radio" name="drink" value="amount">amount
+        <input type="radio" name="drink" value="quantity">quantity
+        <input type="radio" name="drink" value="Total" checked>Total
+    </p>
+
+    <div id="outputArr" style="color:green; margin: 10px;"></div>
+    <button onclick="salesArr()">Submit</button>
+
+
+
+
+
+
+    <script>
+
+        //1 
+        let d1;
+        let d2;
+        function daysTotal(){       
+        let input1 = document.getElementById("q1").value;
+        let input2 = document.getElementById("q2").value;
+         d1 = new Date(input1);
+         d2 = new Date(input2);
+    
+        console.log(d1);
+        console.log(d2);
+    
+        Date.prototype.daysTo = function(d2) {
+            let days = Math.round(Math.abs((this - d2) / (1000 * 60 * 60 * 24)));
+            console.log(days);
+            document.getElementById("days").innerHTML = `number of days: ${days}`;
+            return days;
+        }
+        d1.daysTo(d2)
+    }
+
+        //2 
+
+    function salesArr(){  
+        let x = document.getElementById("arr").value;        
+        let inputArr = eval(x);  
+
+        //deep copy
+        let outputArr = JSON.parse(JSON.stringify(inputArr));
+  
+
+        for (i in outputArr) {
+            let total = outputArr[i].amount * outputArr[i].quantity;
+            outputArr[i].Total = total;
+        }
+       //sort by
+        function sortBy(outputArr,sortBy) {
+            outputArr.sort((a, b) => a.Total > b.Total ? 1 : -1);
+        }
+        sortBy(outputArr);
+
+        console.log(inputArr);
+        console.log(outputArr);
+        document.getElementById("outputArr").innerHTML = `ordered array of Sales: <br>${outputArr}`;
+    }
+        salesArr();
+
+
+
+        //3
+
+        let object
+//          = {
+//     a1: 1,
+//     a2: null,
+//     a3: 111,
+//     a4: {
+//         a7: {w: 7, q: 8},
+//         a8: 8,
+//         a9: 9
+//     },
+//     a5: 50000
+// }
+let prototype
+//  = {
+//     a222: 22222, 
+//     a3:12,
+//     a4: {
+//         a7: {w: null},
+//         a8: 8888
+//     }
+// }
+        function projectedObj(object={
+    a1: 1,
+    a2: null,
+    a3: 111,
+    a4: {
+        a7: {w: 7, q: 8},
+        a8: 8,
+        a9: 9
+    },
+    a5: 50000
+}, prototype= {
+    a222: 22222, 
+    a3:12,
+    a4: {
+        a7: {w: null},
+        a8: 8888
+    }
+}) {
+        let projected = {};         
+            
+          let objectKeys = Object.keys(object);
+          let prototypeKeys = Object.keys(prototype);  
+
+          //array of projected keys that not undefined   
+          let projectedKeysArr = prototypeKeys.filter((a)=>objectKeys.indexOf(a)!==-1);
+       
+            for (let key in prototype) {
+             if (projectedKeysArr.includes(key)){
+                projected[key] = object[key];  
+             }             
+            }       
+            console.log("object", object);           
+            console.log("prototype", prototype);
+            console.log("projected", projected);
+
+            return projected;
+        }
+        projectedObj(object, prototype);
+    </script>
+
+</body>
+
+</html>

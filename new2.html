@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+  /**
+   * Sample JavaScript code for calendar.freebusy.query
+   * See instructions for running APIs Explorer code samples locally:
+   * https://developers.google.com/explorer-help/guides/code_samples#javascript
+   */
+
+//   function authenticate() {
+//     return gapi.auth2.getAuthInstance()
+//         .signIn({scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly"})
+//         .then(function() { console.log("Sign-in successful"); },
+//               function(err) { console.error("Error signing in", err); }
+//               );
+//   }
+  function loadClient() {
+    gapi.client.setApiKey('AIzaSyAkl0q-uMXJ1pc26eiQ0QFfnPHgAITBV-8');
+    return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest")
+        .then(function() { console.log("GAPI client loaded for API"); },
+              function(err) { console.error("Error loading GAPI client for API", err); });
+  }
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+  function execute() {
+    return gapi.client.calendar.freebusy.query({
+      "resource": {timeMin: new Date('2021.03.10').toISOString(), 
+        timeMax: new Date('2021.04.20').toISOString(),
+        timeZone: 'NZ',
+        items: [{ id: 'anton.molchanovskyi@gmail.com' }]}
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  gapi.load("client:auth2", function() {
+    gapi.auth2.init({client_id: '656079090087-q3lou9u3vpe2aq787991c45i73olg93r.apps.googleusercontent.com'});
+  });
+</script>
+<button onclick="loadClient()">authorize and load</button>
+<button onclick="execute()">execute</button>

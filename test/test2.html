@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+
+<body>
+    <h1>JS</h1>    
+    <h3>1. Days between dates</h3>   
+    <button id="button1" onclick="openSection('section1')">Show solution</button> 
+    <br>
+    <br>
+    <section id="section1" style="display:none">
+    <input type="text" size="40" id="day1" value="Jan 01 2016">
+    <input type="text" size="40" id="day2" value="Jan 02 2017" style="display: block; margin-top:10px">    
+    <br>
+    <button onclick="daysTotal()">Submit</button>
+    <br>
+    <div id="days" style="color:green; margin: 10px;"></div>
+    <button onclick="closeSection('section1')">Hide solution</button> 
+    </section>
+
+    <h3>2. Ordered array of sales</h3>
+    <button onclick="openSection('section2')">Show solution</button>
+    <br>
+    <br>
+    <section id="section2" style="display:none">
+    <form id="form1">
+      <textarea rows="5" cols="30" id="arr" >[{amount: 5000,quantity: 50},{amount: 3000,quantity: 60},{amount: 1000,quantity: 90},{amount: 2000,quantity: 20}]</textarea>    
+      <p><input type="radio" name="sort" value="amount">amount
+        <input type="radio" name="sort" value="quantity">quantity
+        <input type="radio" name="sort" value="Total" checked>Total
+      </p>    
+      <button type="submit">Submit</button>
+    </form>  
+    <div style="display: flex">
+    <div id="inputArr" style="width:200px; color:green; margin: 10px;"></div>
+    <div id="outputArr" style="width:200px; color:green; margin: 10px;"></div>
+    </div>
+    <button onclick="closeSection('section2')">Hide solution</button> 
+    </section>  
+
+    <h3>3. Projected object</h3>
+    <button onclick="openSection('section3')">Show solution</button>
+    <section id="section3" style="display:none">
+    <br>
+    <br>
+    <form id="form2">
+      <textarea rows="5" cols="30" id="object">{a1: 1,a2: null,a3: 111,a4: {a7: { w: 7, q: 8 },a8: 8,a9: 9},a5: 50000}</textarea>
+      <textarea rows="5" cols="30" id="prototype">{a222: 22222,a3: 12,a4: {a7: { w: null },a8: 8888}}</textarea>
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="projected" style="width:200px; color:green; margin: 10px;"></div>
+    <button onclick="closeSection('section3')">Hide solution</button> 
+    </section>
+    
+
+    <h3>4. Google Calendar REST API</h3> 
+    <button onclick="openSection('section4')">Show solution</button>
+    <section id="section4" style="display:none">
+    <br>
+    <form id="form3">
+      <input type="text" size="40" id="calendarId" value="anton.molchanovskyi@gmail.com">
+      <input type="text" size="40" id="date1" value="2021.03.10" style="display: block; margin-top:10px">    
+      <input type="text" size="40" id="date2" value="2021.04.20" style="display: block; margin-top:10px">    
+      <br>    
+      <button type="submit">Submit</button>
+    </form>
+    <br>
+    <div id="busyArr" style="color:green; margin: 10px;"></div>
+    <button onclick="closeSection('section3')">Hide solution</button> 
+    </section>
+    
+
+    <h3>5.</h3>
+  
+    
+    
+    <script>
+
+function openSection(sectionId){
+   let section = document.getElementById(sectionId);
+   section.style.display = "block";
+   let button = document.getElementById(sectionId);
+   section.style.display = "block";
+   
+};
+function closeSection(sectionId){ 
+   let section = document.getElementById(sectionId);
+   section.style.display = "none";
+};
+//1
+let d1;
+let d2;
+function daysTotal() {
+    let input1 = document.getElementById("day1").value;
+    let input2 = document.getElementById("day2").value;
+    d1 = new Date(input1);
+    d2 = new Date(input2);
+
+    console.log(d1);
+    console.log(d2);
+
+    Date.prototype.daysTo = function (d2) {
+        let days = Math.round(Math.abs((this - d2) / (1000 * 60 * 60 * 24)));
+        console.log(days);
+        document.getElementById("days").innerHTML = `number of days: ${days}`;
+        return days;
+    }
+    d1.daysTo(d2)
+}
+
+//2
+const form1 = document.getElementById("form1");
+
+form1.addEventListener("submit", function (event) {
+    const data = new FormData(form1);
+    let output = "";
+    for (const entry of data) {
+        output = entry[1]
+    };
+    console.log("sort by:", output);
+
+    let x = document.getElementById("arr").value;
+    let inputArr =   new Function( 'return (' + x + ')' )();
+   
+    //deep copy of inputArr
+    let outputArr = JSON.parse(JSON.stringify(inputArr));
+
+
+    for (i in outputArr) {
+        let total = outputArr[i].amount * outputArr[i].quantity;
+        outputArr[i].Total = total;
+    }
+    //через map попробовать?
+
+    //sort by
+    function sortBy(outputArr, output) {
+        outputArr.sort((a, b) => a[output] > b[output] ? 1 : -1);
+
+    }
+    sortBy(outputArr, output);
+
+    console.log(inputArr);
+    console.log(outputArr);
+
+    let inputS = JSON.stringify(inputArr).replace(/"([^"]+)":/g, '$1:');
+    let outputS = JSON.stringify(outputArr).replace(/"([^"]+)":/g, '$1:');
+
+    document.getElementById("inputArr").innerHTML = `<p>input:</p> ${inputS}`;
+    document.getElementById("outputArr").innerHTML = `<p>output:</p> ${outputS}`;
+
+    event.preventDefault();
+}, false);
+
+
+//3
+
+
+const form2 = document.getElementById("form2");
+
+form2.addEventListener("submit", function (event) {
+
+    let y = document.getElementById("object").value;     
+    let z = document.getElementById("prototype").value; 
+    
+    let object =  new Function( 'return (' + y + ')' )();
+    let prototype =new Function( 'return (' + z + ')' )();
+
+    // console.log(object);
+  
+    function projectedObj(object , prototype) {
+
+    let projected = {};
+
+    let objectKeys = Object.keys(object);
+    let prototypeKeys = Object.keys(prototype);
+
+    //array of projected keys that not undefined   
+    let projectedKeysArr = prototypeKeys.filter((a) => objectKeys.indexOf(a) !== -1);
+
+    for (let key in prototype) {
+        if (projectedKeysArr.includes(key)) {
+            projected[key] = object[key];
+        }
+    }
+
+    console.log("object", object);
+    console.log("prototype", prototype);
+    console.log("projected", projected);
+
+    let projectedStr = JSON.stringify(projected).replace(/"([^"]+)":/g, '$1:');
+    document.getElementById("projected").innerHTML = `<p>projected:</p> ${projectedStr}`;
+    return projected;
+    }
+    
+    projectedObj(object, prototype);
+    event.preventDefault();
+}, false)
+
+//4 
+const form3 = document.getElementById("form3");
+
+
+
+form3.addEventListener("submit", function (event) {
+    let calendarId = document.getElementById("calendarId").value;      
+    let date1 = document.getElementById("date1").value;
+    let date2 = document.getElementById("date2").value;
+    console.log(calendarId)
+    console.log(date1)
+    console.log(date2)
+
+    
+function loadClient() {
+    gapi.client.setApiKey('AIzaSyAkl0q-uMXJ1pc26eiQ0QFfnPHgAITBV-8');
+    return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest")
+        .then(function() { console.log("GAPI client loaded for API"); },
+              function(err) { console.error("Error loading GAPI client for API", err); });
+  }
+
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+
+  function execute() {
+    return gapi.client.calendar.freebusy.query({
+      "resource": {
+        timeMin: new Date(date1).toISOString(), 
+        timeMax: new Date(date2).toISOString(),
+        timeZone: 'NZ',
+        items: [{ id: calendarId }]}
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("response", response);               
+               let busy = response.result.calendars[calendarId].busy;            
+
+            if (undefined) {
+                  console.error('Check if this calendar has public free busy visibility');
+            } else if (busy.length !== 0) {
+                  console.log("Busy", busy); 
+                  let busyArr = JSON.stringify(busy).replace(/"([^"]+)":/g, '$1:');
+
+                  document.getElementById("busyArr").innerHTML = `<p>busyArr:</p> ${busyArr}`;                      
+            } else {
+                   console.log('Free');        
+            }                
+              
+        },           
+         function(err) { 
+                  console.error("error", err);
+        })
+        
+}
+gapi.load("client:auth2", async function() {
+    gapi.auth2.init({client_id: '656079090087-q3lou9u3vpe2aq787991c45i73olg93r.apps.googleusercontent.com'});
+    await loadClient();
+    await execute();
+  })
+  event.preventDefault();
+},false);
+
+</script>
+
+</body>
+
+</html>
